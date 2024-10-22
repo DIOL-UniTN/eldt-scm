@@ -14,7 +14,7 @@ In the context of Industry 4.0, Supply Chain Management (SCM) faces challenges i
 ```
 
 <p align="center">
-<img src="hypergraph-im-visualization.png" width="500">
+<img src="methodologySchema.png" width="500">
 </p>
 
 ## Requirements
