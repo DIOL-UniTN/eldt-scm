@@ -11,7 +11,7 @@ Before getting started, make sure you have installed all the requirements.
 pip install -r requirements.txt
 ```
 
-## Contribution
+## Contributions
 Authors:
 - Stefano Genetti, MSc Student University of Trento (Italy), stefano.genetti@studenti.unitn.it
 - Giovanni Iacca, Associate Professor University of Trento (Italy), giovanni.iacca@unitn.it
