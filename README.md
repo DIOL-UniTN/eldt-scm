@@ -11,9 +11,23 @@ Before getting started, make sure you have installed all the requirements.
 pip install -r requirements.txt
 ```
 
+## Algorithms
+The optimization algorithms we implemented are divided into two categories based on how they handle the input list of customer orders. **Schedule-as-a-whole approaches** consider the entire list of orders collectively. In contrast, **policy-generating approaches** concentrate on training a policy that processes each order individually, making decisions based on the specific features of that order.
+### schedule-as-a-whole approaches
+#### random search (RS)
+#### greedy heuristic (GREEDY)
+#### optuna (OPTUNA)
+#### genetic algorithm (GA)
+#### ant colony optimization (ACO)
+
+### policy-generating approaches
+#### reinforcement learning (RL)
+#### genetic programming (GP)
+#### evolutionary learning decision trees (ELDT)
+
 ## Contributions
 Authors:
 - Stefano Genetti, MSc Student University of Trento (Italy), stefano.genetti@studenti.unitn.it
 - Giovanni Iacca, Associate Professor University of Trento (Italy), giovanni.iacca@unitn.it
 
-For every type of doubts/questions about the repository please do not hesitate to contact us.
+For every type of doubt/question about the repository please do not hesitate to contact us.
