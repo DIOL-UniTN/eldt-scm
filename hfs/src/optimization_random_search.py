@@ -16,7 +16,7 @@ def read_arguments():
     
     parser.add_argument("--input_csv", type=str, help="File path of the CSV where the optimization output has been stored.")
     
-    parser.add_argument("--n_trials", type=int, help="Number of optimization trials.")
+    parser.add_argument("--n_iterations", type=int, help="Number of optimization trials.")
     parser.add_argument("--timeout", type=int, help="Stop study after the given number of second(s).")
 
     parser.add_argument("--out_dir", type=str, help="Output folder.")
@@ -121,7 +121,7 @@ if __name__ == '__main__':
             log_file = open(f"{output_folder_run_path}/log.txt", 'w')
             log_file.write(f"algorithm: random search\n")
             log_file.write(f"current date and time: {datetime.now().strftime('%Y%m%d_%H%M%S')}\n")
-            log_file.write(f"n_trials: {args['n_trials']}\n")
+            log_file.write(f"n_iterations: {args['n_iterations']}\n")
             log_file.write(f"timeout: {args['timeout']}\n")
             log_file.write(f"no_runs: {args['no_runs']}\n")
             log_file.write(f"m: {args['m']}\n")
@@ -135,11 +135,11 @@ if __name__ == '__main__':
             history_y:List[int] = []
 
             # run the optimizer
-            if args["n_trials"]:
+            if args["n_iterations"]:
                 best_y = float("inf")
                 best_x = []
                 start_time = time.time()
-                for _ in range(args["n_trials"]):
+                for _ in range(args["n_iterations"]):
                     x = input_jobs.copy()
                     rng.shuffle(x)
                     y = simulation(x=x,
