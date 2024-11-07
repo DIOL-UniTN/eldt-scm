@@ -26,6 +26,7 @@ For the **HFS** task, the **RS** baseline generates random job permutations and 
 ```
 python optimization_random_search.py --n_iterations <n_iterations> --out_dir <output_directory> --no_runs <no_runs>
 ```
+> ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 ##### hfs
 ```
 python optimization_random_search.py --n_iterations <n_iterations> --out_dir <output_directory> --no_runs <no_runs> --m <M> --e <E> --r <R> --dataset <dataset_path>
@@ -34,14 +35,15 @@ python optimization_random_search.py --n_iterations <n_iterations> --out_dir <ou
 For the **HFS** problem we include in our experimental evaluationa a simple deterministic greedy heuristic, which prioritizes jobs based on their due dates. Specifically, jobs with the earliest due dates are given the highest priority.
 ##### hfs
 ```
-python optimization_heuristic.py --out_dir <output_directory> --m 5 --e 5 --r 5 --dataset <dataset_path>
+python optimization_heuristic.py --out_dir <output_directory> --m <M> --e <E> --r <R> --dataset <dataset_path>
 ```
 #### optuna (OPTUNA)
-[Optuna](https://optuna.org/) is a widely used [open-source](https://github.com/optuna/optuna.git) optimizer that employs state-of-the-art algorithms for solving optimization problems. It consists of two main components: a sampler and a pruner. The sampler generates design variable configurations, known as trials, aiming to explore the most promising regions of the solution space. By default, the Tree-structured Parzen Estimator is used. The pruner’s role is to automatically terminate unpromising trials, avoiding exploration of less promising areas of the fitness landscape. Optuna’s default pruning method, the Median Pruner, stops a trial if its best intermediate result is worse than the median of previous trials at the same step. For the **make-or-buy** decision problem, **OPTUNA** generates a binary vector **x** of length N orders during each trial, and the algorithm is executed for `n_trials` trials. In the **HFS** task, **OPTUNA** is executed for `n_trials` trials, where each iteration assigns a priority value between 0 and N to each job in the input, with N representing the total number of laser cutting machine orders to be scheduled.
+[Optuna](https://optuna.org/) is an [open-source](https://github.com/optuna/optuna.git) optimizer that employs state-of-the-art algorithms for solving optimization problems. It includes a sampler, which generates trial configurations to explore promising solution regions, and a pruner, which stops unpromising trials. By default, Optuna uses the Tree-structured Parzen Estimator for sampling and the Median Pruner for early stopping. In the **make-or-buy** decision problem, **OPTUNA** generates a binary vector **x** of length $N$ orders during each trial, and the algorithm is executed for `n_trials` trials. In the **HFS** task, **OPTUNA** is executed for `n_trials` trials, where each iteration assigns a priority value between $0$ and $N$ to each job in the input, with $N$ representing the total number of laser cutting machine orders to be scheduled.
 ##### make-or-buy
 ```
-python optimization_optuna.py --n_trials 5000 --out_dir output/optuna --no_runs 10
+python optimization_optuna.py --n_trials <n_trials> --out_dir <output_directory> --no_runs <no_runs>
 ```
+> ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 ##### hfs
 ```
 python optimization_optuna.py --n_trials 5000 --out_dir <output_directory> --no_runs 10 --m 5 --e 5 --r 5 --dataset <dataset_path>
@@ -67,6 +69,7 @@ This method effectively transfers information about the relative order of jobs f
 ```
 python optimization_ga.py --out_dir output/ga --no_runs 10 --population_size 10 --offspring_size 10 --max_generations 500
 ```
+> ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 ##### hfs
 ```
 python optimization_ga.py --out_dir <output_directory> --no_runs 10 --m 5 --e 5 --r 5 --dataset <dataset_path> --max_generations 500 --population_size 10 --offspring_size 10
@@ -80,6 +83,7 @@ where $p$ is the best solution path (i.e., the schedule of jobs resulting in the
 ```
 python optimization_aco.py --out_dir output/aco --no_runs 10 --population_size  10 --max_generations 500
 ```
+> ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 ##### hfs
 ```
 python optimization_aco.py --out_dir <output_directory> --dataset <dataset_path> --no_runs 10 --m 5 --e 5 --r 5 --max_generations 500 --population_size 10
@@ -92,6 +96,7 @@ The \textsc{RL} algorithm utilizes the PPO implementation provided by RLlib. The
 ```
 python optimization_rl.py --out_dir output/rl --no_runs 10 --no_evaluations 5000
 ```
+> ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 ##### hfs
 ```
 python optimization_rl.py --out_dir <output_directory> --no_runs 10 --no_evaluations 5000 --m 5 --e 5 --r 5 --num_machine_types <num_machine_types> --max_makespan <max_makespan> --dataset <dataset_path>
@@ -118,6 +123,7 @@ The constant integer values are restricted to the interval $[1, 20]$, as the max
 ```
 python optimization_gp.py --out_dir output/gp --no_runs 10 --population_size 20 --max_generations 250
 ```
+> ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 ##### hfs
 ```
 python optimization_gp.py --out_dir <output_directory> --no_runs 10 --m 5 --e 5 --r 5 --num_machine_types <num_machine_types> --priority_levels 10 --dataset <dataset_path> --population_size 20 --max_generations 250
@@ -148,6 +154,7 @@ In this grammar, bt is the starting symbol. if statements are used to produce co
 ```
 python optimization_ge.py --out_dir output/ge --no_runs 10 --population_size 5 --max_generations 200 --episodes 5
 ```
+> ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 ##### hfs
 ```
 python optimization_ge.py --m 5 --e 5 --r 5 --num_machine_types <num_machine_types> --max_makespan <max_makespan> --max_generations 200 --dataset <dataset_path> --out_dir <output_directory> --no_runs 10 --population_size 5 --episodes 5 --priority_levels 10
