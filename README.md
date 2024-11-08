@@ -291,7 +291,7 @@ To ensure a fair comparison, each algorithm was allocated 5000 AnyLogic simulati
 
 ## Contributions
 Authors:
-- Stefano Genetti, MSc Student University of Trento (Italy), stefano.genetti@studenti.unitn.it
+- Stefano Genetti, MSc Student University of Trento (Italy), stefano.genetti@unitn.it
 - Giovanni Iacca, Associate Professor University of Trento (Italy), giovanni.iacca@unitn.it
 
 For every type of doubt/question about the repository please do not hesitate to contact us.
