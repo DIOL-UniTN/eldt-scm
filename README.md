@@ -181,10 +181,10 @@ The terminal set $T$ is defined as:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**$T$**:\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{number of machine types in the dataset} \rbrace$\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{latest basement arrival date in the dataset} \rbrace$\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{latest electrical panel arrival date in the dataset} \rbrace$\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{latest due date in the dataset} \rbrace$\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{number of output priority levels} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_2 \in \lbrace 1, 2, ..., \text{latest basement arrival date in the dataset} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_3 \in \lbrace 1, 2, ..., \text{latest electrical panel arrival date in the dataset} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_4 \in \lbrace 1, 2, ..., \text{latest due date in the dataset} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_5 \in \lbrace 1, 2, ..., \text{number of output priority levels} \rbrace$\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;False ∈ 𝔹\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;True ∈ 𝔹
 
