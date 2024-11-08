@@ -244,9 +244,9 @@ To ensure a fair comparison, each algorithm was allocated 5000 AnyLogic simulati
 | `aco_gen`       | 500   |
 | `aco_psize`     | 10    |
 | `q_0`           | 0.5   |
-| `α` (alpha)     | 0.1   |
-| `δ` (delta)     | 1.0   |
-| `ρ` (rho)       | 0.1   |
+| `α`             | 0.1   |
+| `δ`             | 1.0   |
+| `ρ`             | 0.1   |
 
 ### policy-generating approaches
 
@@ -282,9 +282,9 @@ To ensure a fair comparison, each algorithm was allocated 5000 AnyLogic simulati
 | `m_p`           | 0.5    |
 | `ge_gen`        | 200    |
 | `t_size`        | 2      |
-| `α` (alpha)     | 0.001  |
-| `γ` (gamma)     | 0.05   |
-| `ε` (epsilon)   | 0.05   |
+| `α`             | 0.001  |
+| `γ`             | 0.05   |
+| `ε`             | 0.05   |
 | `n_episodes`    | 5      |
 
 ---
