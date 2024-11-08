@@ -129,6 +129,29 @@ The terminal set $T$ is defined as:\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;True ∈ 𝔹
 
 The constant integer values are restricted to the interval $[1, 20]$, as the maximum number of components of type A, B, and C required to fulfill an order is 20. Using this grammar, an initial population of `gp_psize` individuals is randomly generated using the `genHalfAndHalf` method. Half of the population is created using the `genGrow` method, where tree depths vary between `gp_minT` and `gp_maxT`. The other half is generated using `getFull`, where all trees have a fixed depth between `gp_minT` and `gp_maxT`. For mutation, we employ a uniform mutation operator. In this approach, a random point in a tree is replaced by a new subtree generated using the `genHalfAndHalf` method, parameterized by a minimum depth of `gp_minM` and a maximum depth of `gp_maxM`. For crossover, we use one-point crossover, where randomly selected subtrees from two parent individuals are swapped. The mutation and crossover operators are applied with probabilities `gp_mp` and `gp_cp`, respectively. We use tournament selection with tournament size `gp_tsize` to choose the individuals for mating. The evolutionary process terminates after a maximum of `gp_gen` generations.
+
+In the case of the **HFS** problem, **GP** evolves a population of `gp_psize` decision trees that take a laser cutting machine encoded as a 1-D vector of features and return a priority level from 0 to `priority_levels`. The range $[0,n]$ (with $n$ as the input cardinality) is divided into equal consecutive intervals corresponding to these priority levels. When a priority level is assigned by a leaf node, the actual priority is chosen randomly within the associated interval. Each input laser cutting machine is represented by four integers features: machine type (**mt**), date basement arrival (**db**), date electrical panel arrival (**de**), and delivery date (**dd**). The fitness of a decision tree is determined by the makespan (to be minimized) obtained through the AnyLogic simulation, based on the job schedule determined by the tree. A strongly typed grammar is used, with function set $F$ defined as follows:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**$F$**:\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**eq**(x, y): {**mt**} × {**mt**} → 𝔹\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**lt**(x, y): {**db**, **de**, **dd**} × {**db**, **de**, **dd**} → 𝔹\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**gt**(x, y): {**db**, **de**, **dd**} × {**db**, **de**, **dd**} → 𝔹\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**if_then_else**(c, x, y): 𝔹 × 𝕊 × 𝕊 → 𝕊
+
+The terminal set $T$ is defined as:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**$T$**:\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{number of machine types in the dataset} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{latest basement arrival date in the dataset} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{latest electrical panel arrival date in the dataset} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{latest due date in the dataset} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $n_1 \in \lbrace 1, 2, ..., \text{number of output priority levels} \rbrace$\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;False ∈ 𝔹\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;True ∈ 𝔹
+
+$n_1, n_2, n_3, n_4, n_5$ represent bounded ephemeral constants, where $n_1$ encodes the laser cutting machine type as an integer between 1 and the total number of machine types, $n_2$ represents the basement arrival date ranging from 1 to the latest basement arrival date in the dataset, $n_3$ indicates the electrical panel arrival date between 1 and the latest electrical panel arrival date, $n_4$ corresponds to the due date from 1 to the latest due date, and $n_5$ specifies the output priority level between 0 and `priority_levels`.
+The **GP** approach begins with a randomly generated initial population of `gp_psize` individuals using the genHalfAndHalf method. Uniform mutation and one-point crossover operators are applied, with tournament selection of size `gp_tsize` used to select individuals for mating. The evolutionary process terminates after a maximum of `gp_gen` generations.
+
 ##### make-or-buy
 ```
 python optimization_gp.py --out_dir <output_directory> --no_runs <no_runs> --population_size <gp_psize> --max_generations <gp_gen>
@@ -138,7 +161,7 @@ python optimization_gp.py --out_dir <output_directory> --no_runs <no_runs> --pop
 > ⚠️ **Note:** In the GP implementation for solving the **make-or-buy** decision problem, the line ```df = pd.read_excel("orders.xlsx")``` has to be modified to reference the specific Excel file containing the input orders. 
 ##### hfs
 ```
-python optimization_gp.py --out_dir <output_directory> --no_runs <no_runs> --m <M> --e <E> --r <R> --num_machine_types <num_machine_types> --priority_levels 10 --dataset <dataset_path> --population_size <gp_psize> --max_generations <gp_gen>
+python optimization_gp.py --out_dir <output_directory> --no_runs <no_runs> --m <M> --e <E> --r <R> --num_machine_types <num_machine_types> --priority_levels <priority_levels> --dataset <dataset_path> --population_size <gp_psize> --max_generations <gp_gen>
 ```
 #### evolutionary learning decision trees (ELDT)
 The outer loop of the optimization process in **ELDT** is an evolutionary algorithm, which evolves a population of `p_size` individuals. Each individual is encoded as a fixed-length list of integers. To evaluate an individual, it is first translated into a corresponding decision tree, based on the production rules of a problem-specific BNF grammar. The grammar implemented for the **make-or-buy** decision task is as follows.
@@ -205,8 +228,8 @@ To ensure a fair comparison, each algorithm was allocated 5000 AnyLogic simulati
 |-----------------|-------|
 | `ga_psize`      | 10    |
 | `ga_gen`        | 500   |
-| `ga_mp`         | 1     |
-| `ga_cp`         | 1     |
+| `ga_mp`         | 1.0   |
+| `ga_cp`         | 1.0   |
 | `ga_mn`         | 1     |
 | `ga_elites`     | 1     |
 
