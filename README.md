@@ -141,37 +141,42 @@ python optimization_gp.py --out_dir <output_directory> --no_runs <no_runs> --pop
 python optimization_gp.py --out_dir <output_directory> --no_runs <no_runs> --m <M> --e <E> --r <R> --num_machine_types <num_machine_types> --priority_levels 10 --dataset <dataset_path> --population_size <gp_psize> --max_generations <gp_gen>
 ```
 #### evolutionary learning decision trees (ELDT)
-The outer loop of the optimization process in **ELDT** is an evolutionary algorithm, as shown in the Figure ?, which evolves a population of `p_size` individuals. Each individual is encoded as a fixed-length list of integers. To evaluate an individual, it is first translated into a corresponding decision tree, based on the production rules of a problem-specific BNF grammar. The grammar implemented for our **GE** approach is as follows.
-⟨bt⟩ ::= ⟨if⟩
-⟨if⟩ ::= if ⟨condition⟩ then ⟨a⟩ else ⟨a⟩
-⟨a⟩ ::= leaf | ⟨if⟩
-⟨condition⟩ ::= ⟨in₀⟩ ⟨comp⟩ ⟨c⟩ | ⟨in₁⟩ ⟨comp⟩ ⟨c⟩ | ⟨in₂⟩ ⟨comp⟩ ⟨c⟩
-⟨comp⟩ ::= < | >
-⟨c⟩ ::= v ∈ [0, 21]
-In this grammar, bt represents the starting symbol. The if rule is used to generate if-then-else statements. The outcome of an if-then-else statement, denoted by a, can either be a terminal leaf or another if statement. Within each if statement, the condition is expressed as an inequality comparison (comp) between the input variables $in\_0$, $in\_1$, or $in\_2$, which represent the number of components of types A, B, or C required to process the input order, and a constant $c$, an integer in the range [1, 21]. At the terminal leaves of the decision tree, the agent must decide between two possible actions ($n\_\text{action}=2$), either to make or to buy the input order. The content of each leaf encodes the probability of making or buying the order and is updated using Q-learning. In particular, each generated decision tree guides the behavior of a RL agent, which interacts with the environment over $n\_\text{episodes}$ episodes. Similar to **RL** and **GP**, the environment is the list of orders enumerated in the Excel document. The agent perceives and processes these orders one at a time.
+The outer loop of the optimization process in **ELDT** is an evolutionary algorithm, which evolves a population of `p_size` individuals. Each individual is encoded as a fixed-length list of integers. To evaluate an individual, it is first translated into a corresponding decision tree, based on the production rules of a problem-specific BNF grammar. The grammar implemented for the **make-or-buy** decision task is as follows.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨bt⟩ ::= ⟨if⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨if⟩ ::= if ⟨condition⟩ then ⟨a⟩ else ⟨a⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨a⟩ ::= leaf | ⟨if⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨condition⟩ ::= ⟨in₀⟩ ⟨comp⟩ ⟨c⟩ | ⟨in₁⟩ ⟨comp⟩ ⟨c⟩ | ⟨in₂⟩ ⟨comp⟩ ⟨c⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨comp⟩ ::= < | >\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨c⟩ ::= v ∈ [0, 21]
+
+In this grammar, **\<bt\>** represents the starting symbol. The **\<if\>** rule is used to generate if-then-else statements. The outcome of an if-then-else statement, denoted by **\<a\>**, can either be a terminal **leaf** or another **\<if\>** statement. Within each **\<if\>** statement, the **\<condition\>** is expressed as an inequality comparison (**\<comp\>**) between the input variables **⟨in₀⟩**, **⟨in₁⟩**, or **⟨in₂⟩**, which represent the number of components of types A, B, or C required to process the input order, and a constant **⟨c⟩**, an integer in the range [1, 21]. At the terminal leaves of the decision tree, the agent must decide between two possible actions ($n\_\text{action}=2$), either to make or to buy the input order. The content of each leaf encodes the probability of making or buying the order and is updated using Q-learning. In particular, each generated decision tree guides the behavior of a reinforcement learning agent, which interacts with the environment over `n_episodes` episodes. Similar to **RL** and **GP**, the environment is the list of orders enumerated in the Excel document. The agent perceives and processes these orders one at a time.
+
 In the case of the **HFS** problem, the production rules are defined as follows:
-⟨bt⟩ ::= ⟨if⟩
-⟨if⟩ ::= if ⟨condition⟩ then ⟨a⟩ else ⟨a⟩ | if ⟨conditioneq⟩ then ⟨a⟩ else ⟨a⟩
-⟨a⟩ ::= leaf | ⟨if⟩
-⟨condition⟩ ::= ⟨in₁⟩ ⟨comp⟩ ⟨c₁⟩ | ⟨in₂⟩ ⟨comp⟩ ⟨c₂⟩ | ⟨in₃⟩ ⟨comp⟩ ⟨c₃⟩ | ⟨in₄⟩ ⟨comp⟩ ⟨c₄⟩
-⟨conditioneq⟩ ::= ⟨in₀⟩ = ⟨c₀⟩
-⟨comp⟩ ::= < | >
-⟨c₀⟩ ::= v ∈ [0, num_machine_types]
-⟨c₁⟩ ::= v ∈ [0, date_basement_arrival_max]
-⟨c₂⟩ ::= v ∈ [0, date_electrical_panel_arrival_max]
-⟨c₃⟩ ::= v ∈ [0, date_delivery_max]
-⟨c₄⟩ ::= v ∈ [0, n]
-In this grammar, bt is the starting symbol. if statements are used to produce conditional logic, where the outcome, denoted by a, can either be a terminal leaf or another if statement, allowing for recursive branching within the tree. The condition production generates inequalities (comp) between constant integer values of types $c\_1,...,c\_4$ and the input order features $\text{in}\_1, ..., \text{in}\_4$. The conditioneq, on the other hand, generates equalities between integer constants of type $c\_0$ and the input feature $\text{in}\_0$. For a given input order $j_i$ at any point in the execution, the input features are defined as follows: $\text{in}\_0$ represents the machine type; $\text{in}\_1$ represents the basement arrival date; $\text{in}\_2$ represents the electrical panel arrival date; $\text{in}\_3$ represents the due date; $\text{in}\_4$ represents the number of remaining jobs that need to be prioritized. The \text{leaf} terminal symbol represents the insertion of a leaf node in the resulting decision tree. The decision trees produced by this grammar in the first optimization stage are employed in the second optimization stage. At this stage, the decision tree processes one laser cutting machine order $j\_i$ at a time (the observation space), makes decisions based on the order's features, and outputs a priority (the action space). The reward, $\text{makespan}\_\text{max} - \text{makespan}$, is provided by the environment once all jobs $j\_0, ..., j\_n$ have been prioritized, following the same structure as in **RL**. Notably, the leaf nodes in the decision tree do not directly assign a priority number. Instead, they produce a priority level, selected from a predefined set of $n\_\text{action}$ priority levels. The range $[0,n]$ is divided into equal consecutive intervals corresponding to these priority levels. When a priority level is produced by a leaf node, the actual priority assigned to the job is a random number uniformly selected from the interval associated with that priority level. Remarkably, this approach significantly reduces the action space, thus facilitating the convergence of Q-learning. At each generation, the decision trees in the population interact with the environment for $n\_\text{episodes}$ to update the content of the leaves using Q-learning. The environment in this problem is a list of jobs. To avoid evolving decision trees that overfit to the specific order in which jobs appear, the Gym environment is reset at each generation, and the list of input orders is randomly shuffled. This ensures that the evolved interpretable decision trees are capable of making decisions based on the intrinsic properties of the orders, rather than the order in which they are presented.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨bt⟩ ::= ⟨if⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨if⟩ ::= if ⟨condition⟩ then ⟨a⟩ else ⟨a⟩ | if ⟨conditioneq⟩ then ⟨a⟩ else ⟨a⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨a⟩ ::= leaf | ⟨if⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨condition⟩ ::= ⟨in₁⟩ ⟨comp⟩ ⟨c₁⟩ | ⟨in₂⟩ ⟨comp⟩ ⟨c₂⟩ | ⟨in₃⟩ ⟨comp⟩ ⟨c₃⟩ | ⟨in₄⟩ ⟨comp⟩ ⟨c₄⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨conditioneq⟩ ::= ⟨in₀⟩ = ⟨c₀⟩\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨comp⟩ ::= < | >\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨c₀⟩ ::= v ∈ [0, num_machine_types]\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨c₁⟩ ::= v ∈ [0, date_basement_arrival_max]\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨c₂⟩ ::= v ∈ [0, date_electrical_panel_arrival_max]\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨c₃⟩ ::= v ∈ [0, date_delivery_max]\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⟨c₄⟩ ::= v ∈ [0, n]
+
+In this grammar, **⟨bt⟩** is the starting symbol. **⟨if⟩** statements are used to produce conditional logic, where the outcome, denoted by **⟨a⟩**, can either be a terminal leaf or another **⟨if⟩** statement, allowing for recursive branching within the tree. The condition production generates inequalities (**⟨comp⟩**) between constant integer values of types **⟨c₁⟩**,...,**⟨c₄⟩** and the input order features **⟨in₁⟩**, ..., **⟨in₄⟩**. The **⟨conditioneq⟩**, on the other hand, generates equalities between integer constants of type **⟨c₀⟩** and the input feature **⟨in₀⟩**. For a given input order $j_i$ at any point in the execution, the input features are defined as follows: **⟨in₀⟩** represents the machine type; **⟨in₁⟩** represents the basement arrival date; **⟨in₂⟩** represents the electrical panel arrival date; **⟨in₃⟩** represents the due date; **⟨in₄⟩** represents the number of remaining jobs that need to be prioritized. The **leaf** terminal symbol represents the insertion of a leaf node in the resulting decision tree. The decision trees produced by this grammar in the first optimization stage are employed in the second optimization stage. At this stage, the decision tree processes one laser cutting machine order $j\_i$ at a time (the observation space), makes decisions based on the order's features, and outputs a priority (the action space). The reward, $\text{makespan}\_\text{max} - \text{makespan}$, is provided by the environment once all jobs $j\_0, ..., j\_n$ have been prioritized. Notably, the leaf nodes in the decision tree do not directly assign a priority number. Instead, they produce a priority level, selected from a predefined set of `priority_levels` priority levels. The range $[0,n]$ is divided into equal consecutive intervals corresponding to these priority levels. When a priority level is produced by a leaf node, the actual priority assigned to the job is a random number uniformly selected from the interval associated with that priority level. Remarkably, this approach significantly reduces the action space, thus facilitating the convergence of Q-learning. At each generation, the decision trees in the population interact with the environment for `n_episodes` to update the content of the leaves using Q-learning. The environment in this problem is a list of jobs. To avoid evolving decision trees that overfit to the specific order in which jobs appear, the Gym environment is reset at each generation, and the list of input orders is randomly shuffled. This ensures that the evolved interpretable decision trees are capable of making decisions based on the intrinsic properties of the orders, rather than the order in which they are presented.
 ##### make-or-buy
 ```
-python optimization_ge.py --out_dir output/ge --no_runs 10 --population_size 5 --max_generations 200 --episodes 5
+python optimization_ge.py --out_dir <output_directory> --no_runs <no_runs> --population_size <p_size> --max_generations <ge_gen> --episodes <n_episodes>
 ```
 > ⚠️ **Note:** For the **make-or-buy** decision problem, the list of orders is provided in an Excel document. Please ensure that the "population_orders" in the AnyLogic model is correctly referencing the appropriate Excel file.
 
 > ⚠️ **Note:** In the ELDT implementation for solving the **make-or-buy** decision problem, the line ```df = pd.read_excel("orders.xlsx")``` has to be modified to reference the specific Excel file containing the input orders.
 ##### hfs
 ```
-python optimization_ge.py --m 5 --e 5 --r 5 --num_machine_types <num_machine_types> --max_makespan <max_makespan> --max_generations 200 --dataset <dataset_path> --out_dir <output_directory> --no_runs 10 --population_size 5 --episodes 5 --priority_levels 10
+python optimization_ge.py --m <M> --e <E> --r <R> --num_machine_types <num_machine_types> --max_makespan <max_makespan> --max_generations <ge_gen> --dataset <dataset_path> --out_dir <output_directory> --no_runs <no_runs> --population_size <p_size> --episodes <n_episodes> --priority_levels <priority_levels>
 ```
 > ⚠️ **Note:** To properly determine the value of $\text{makespan}\_{\text{max}}$ for a given problem instance, we recommend executing the optimization process using another optimizer. This will provide insight into the makespan values obtained, allowing you to set the $\text{makespan}\_{\text{max}}$ argument accordingly. For the datasets used in this paper, we established the following $\text{makespan}\_{\text{max}}$ values: $\text{makespan}\_{\text{max}} = 500$ for datasets d1, d2, and d3; $\text{makespan}\_{\text{max}} = 650$ for dataset d4; and $\text{makespan}\_{\text{max}} = 2500$ for dataset d5.
 
